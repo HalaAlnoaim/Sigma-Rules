@@ -1,0 +1,17 @@
+title: Suspicious LNK File Executing CMD
+ID: eb641a95-81a7-44c0-b7d2-6ee49caa5caa
+status: test
+description: Detects execution of CMD (in minimized mode) triggered by clicking an LNK file
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_EventVeiwer:
+        EventID: 
+          - 4688
+          - 4689
+        ParentImage|endswith: '.lnk'
+        Image|endswith: '.cmd'
+    condition: selection_EventVeiwer 
+falsepositives: Legitimate LNK shortcuts launching CMD
+level: high

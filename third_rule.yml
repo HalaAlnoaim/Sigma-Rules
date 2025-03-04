@@ -1,0 +1,17 @@
+title: Detect SessionGopher Execution
+ID: 4a43576c-7f94-440f-acd7-43e440327cd3
+status: test
+description: Detects execution of the SessionGopher PowerShell script used to credentials access
+logsource:
+  category: process_creation
+  product: windows
+detection: 
+  selection:
+    Image|endswith: '\powershell.exe'
+    CommandLine|contains: 
+      - 'IEX (New-Object Net.Webclient).DownloadString'
+      - 'Invoke-SessionGopher'
+      - 'SessionGopher'
+condition: selection
+falsepositives: Legitimate use for credential management
+level: high

@@ -1,0 +1,30 @@
+title: ScheduleTask Rule - CLI 
+ID: 4aa2cbab-4435-4da0-a9b2-e2e0c66e7d43 #By using UUID genrator
+status: test
+description: Detects the creation of a scheduled task that may be used for persistence
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image: '\schtasks.exe' #'schtasks.exe', used to manage scheduled tasks on Windows
+        CommandLine|contains:
+            - '/create' # Detects the creation of a new scheduled task
+            - '/sc' #Used to specify the schedule type
+            - '/tn' #The name of task
+    schedule_type:
+        CommandLine|contains:
+            - 'daily' #Tasks scheduled to run daily
+            - 'hourly' #Tasks scheduled to run hourly
+    filter:
+        Image: 
+          - 'C:\Windows\System32\'
+          - 'C:\Program Files\Microsoft\'
+
+    condition: selection and schedule_type and not filter
+    
+falsepositives:
+    - System maintenance tasks
+    
+level: high
+
